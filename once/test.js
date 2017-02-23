@@ -43,4 +43,15 @@ describe('once', function() {
     init(22, 33, 44);
     assert.deepEqual(args, [11, 22, 33]);
   });
+
+  it('gets called only once even if the callback returns undefined', function() {
+    var called = 0;
+    var init = once(function() {
+      ++called;
+      return undefined;
+    });
+    init();
+    init();
+    assert.equal(called, 1);
+  });
 });
