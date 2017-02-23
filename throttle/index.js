@@ -5,44 +5,50 @@
 // `throttle` prevents a callback from being invoked more
 // than once within the time threshold.
 var throttle = function(callback, threshold) {
-  // Toggle to prevent callback invocation.
-  var isCalled = false;
+  // Flag to signal that the callback may be invoked.
+  var isReady = true;
+
+  // Declare a flag that is true if throttle was
+  // invoked at least once during cooldown.
+  var onceMore;
 
   // Stores the context and arguments of the last invocation.
   var context;
   var args;
 
-  // Store the safety trigger timer (invoke callback once more 
-  // after the threshold to "make up for swallowed calls").
-  var onceMore;
-
-  // `run` wraps the callback invocation.
-  var run = function() {
+  // `trigger` wraps the callback invocation, applying the last invoked context and arguments.
+  // Starts the cooldown timer, and toggles the isReady flag to block during the cooldown.
+  function trigger() {
+    isReady = false;
     callback.apply(context, args);
+    // MARK: Why do we need to add one to the threshold here????
+    setTimeout(refresh, threshold + 1); 
   }
 
-  // `refresh` toggles isCalled to let the next throttle
+  // `refresh` toggles isReady to let the next throttle
   // invocation trigger the callback.
-  var refresh = function() {
-    isCalled = false;
-    onceMore = setTimeout(run, 0);
+  function refresh() {
+    isReady = true;
+    // If throttle was invoked during the cooldown,
+    // trigger the callback once more.
+    if (onceMore) {
+      trigger();
+    }
   }
 
   return function() {
+    // Set the context and arguments immediately.
     context = this;
     args = arguments;
 
-    if (!isCalled) {
-      // Toggle to prevent the next invocation from triggering this block.
-      isCalled = true;
-      // Clear the safety trigger.
-      clearTimeout(onceMore);
-      // Invoke the callback once.
-      run();
-      // Set a timer for with the threshold duration.
-      setTimeout(refresh, threshold);
+    if (isReady) {
+      trigger();
+    } else {
+      // If invoked during cooldown, trigger the callback
+      // at the end of the cooldown.
+      onceMore = true;
     }
-  }
-}
+  };
+};
 
 module.exports = throttle;
