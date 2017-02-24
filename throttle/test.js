@@ -53,7 +53,10 @@ describe('throttle', function() {
     var throttled = throttle(function() {
       calledTimes.push(new Date() - startTime);
     }, 10);
+
+    // 0 gets pushed here
     throttled(); //start now
+    // this gets called every 1 tick!!
     var interval = setInterval(throttled, 1);
     setTimeout(function() {
       clearInterval(interval);
