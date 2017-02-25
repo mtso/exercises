@@ -1,3 +1,6 @@
+// debounce v2 (with flush)
+// mtso 2017
+
 module.exports = function(callback, threshold) {
   var delay;
   var context;
