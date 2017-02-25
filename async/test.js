@@ -19,12 +19,30 @@ describe('async', function() {
       });
     });
 
+    it('runs 3 functions in sequence', function(done) {
+      var fun1 = function(cb) {
+        setTimeout(cb.bind(null, null, 'test'), 10);
+      };
+      var fun2 = function(cb, data) {
+        setTimeout(cb.bind(null, null, data + 'ing'), 10);
+      };
+      var fun3 = function(cb, data) {
+        setTimeout(cb.bind(null, null, 'for ' + data), 10);
+      };
+
+      // returns a thunk
+      async.sequence([fun1, fun2, fun3])(function(err, data) {
+        assert.equal(data, 'for testing');
+        done();
+      });
+    });
+
     it('correctly handles sync functions in sequence', function(done) {
       var fun1 = function(cb) {
         cb(null, 'test1');
       };
       var fun2 = function(cb, data) {
-          cb(null, data);
+        cb(null, data);
       };
 
       // returns a thunk
