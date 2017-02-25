@@ -20,7 +20,7 @@ module.exports = function(callback, delay) {
   thunk.flush = function() {
     clearTimeout(delayTimer);
     trigger();
-  }
+  };
 
   return thunk;
-}
+};
