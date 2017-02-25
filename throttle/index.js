@@ -1,54 +1,35 @@
-// ```
-// mtso 2017
-// ```
+// limits the callback from being called more than once
+// within the `threshold` in milliseconds.
+module.exports = function(callback, threshold) {
+  // save context
+  // save arguments
+  var lastContext;
+  var lastArguments;
 
-// `throttle` prevents a callback from being invoked more
-// than once within the time threshold.
-var throttle = function(callback, threshold) {
-  // Flag to signal that the callback may be invoked.
   var isReady = true;
+  var isCalledDuringCooldown = false;
 
-  // Declare a flag that is true if throttle was
-  // invoked at least once during cooldown.
-  var onceMore;
-
-  // Stores the context and arguments of the last invocation.
-  var context;
-  var args;
-
-  // `trigger` wraps the callback invocation, applying the last invoked context and arguments.
-  // Starts the cooldown timer, and toggles the isReady flag to block during the cooldown.
-  function trigger() {
+  var trigger = function() {
     isReady = false;
-    callback.apply(context, args);
-    // MARK: Why do we need to add one to the threshold here????
-    setTimeout(refresh, threshold + 1); 
-  }
+    callback.apply(lastContext, lastArguments);
+    setTimeout(refresh, threshold);
+  };
 
-  // `refresh` toggles isReady to let the next throttle
-  // invocation trigger the callback.
-  function refresh() {
+  var refresh = function() {
     isReady = true;
-    // If throttle was invoked during the cooldown,
-    // trigger the callback once more.
-    if (onceMore) {
+    if (isCalledDuringCooldown) {
       trigger();
     }
-  }
+  };
 
   return function() {
-    // Set the context and arguments immediately.
-    context = this;
-    args = arguments;
+    lastContext = this;
+    lastArguments = arguments;
 
     if (isReady) {
       trigger();
     } else {
-      // If invoked during cooldown, trigger the callback
-      // at the end of the cooldown.
-      onceMore = true;
+      isCalledDuringCooldown = true;
     }
   };
 };
-
-module.exports = throttle;
