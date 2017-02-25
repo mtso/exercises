@@ -3,6 +3,9 @@ var curry = require('./');
 
 describe('curry', function() {
 
+  // INPUT: we are given a function
+  // !! we do not know how many arguments it can take?
+  // OR WE DO?? with length
   it('curries the function at least once', function() {
     var add = curry(function(a, b) {
       return a + b;
@@ -17,6 +20,8 @@ describe('curry', function() {
     assert.equal(output(1), 1);
   });
 
+  // If there is only one argument passed into returned func,
+  // deal differently than if we had more than one argument passedinto the returned func??
   it('curries the function until the arguments needed are given at least once', function() {
     var add = curry(function(a, b, c) {
       return a + b + c;
