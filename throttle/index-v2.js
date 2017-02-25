@@ -1,3 +1,6 @@
+// throttle v2
+// mtso 2017
+
 // limits the callback from being called more than once
 // within the `threshold` in milliseconds.
 module.exports = function(callback, threshold) {
