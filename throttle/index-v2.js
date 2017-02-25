@@ -22,6 +22,7 @@ module.exports = function(callback, threshold) {
     isReady = true;
     if (isCalledDuringCooldown) {
       trigger();
+      isCalledDuringCooldown = false;
     }
   };
 
