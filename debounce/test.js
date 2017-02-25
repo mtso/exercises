@@ -1,8 +1,8 @@
-var assert = require("assert");
-var debounce = require("./");
+var assert = require('assert');
+var debounce = require('./');
 
-describe("debounce", function() {
-  it("waits for the threshold to pass before executing", function(done) {
+describe('debounce', function() {
+  it('waits for the threshold to pass before executing', function(done) {
     var now = new Date();
     var debounced = debounce(
       function() {
@@ -34,7 +34,7 @@ describe("debounce", function() {
     );
   });
 
-  it("will execute more than once outside the threshold", function(done) {
+  it('will execute more than once outside the threshold', function(done) {
     var called = 0;
     var debounced = debounce(
       function() {
@@ -54,7 +54,7 @@ describe("debounce", function() {
     );
   });
 
-  it("gets called with context", function(done) {
+  it('gets called with context', function(done) {
     var ctx;
     var debounced = debounce(
       function() {
@@ -73,7 +73,7 @@ describe("debounce", function() {
     );
   });
 
-  it("gets called with arguments", function(done) {
+  it('gets called with arguments', function(done) {
     var args;
     var debounced = debounce(
       function() {
@@ -92,33 +92,35 @@ describe("debounce", function() {
     );
   });
 
-  it("has a flush function to immediately calls the callback", function(done) {
-    var actual;
-    var called = 0;
-    var debounced = debounce(
-      function(value) {
-        called++;
-        actual = value;
-      },
-      10
-    );
-    debounced("1");
-    debounced("2");
+  describe('has a flush function that', function(done) {
+    it('immediately calls the callback', function(done) {
+      var actual;
+      var called = 0;
+      var debounced = debounce(
+        function(value) {
+          called++;
+          actual = value;
+        },
+        10
+      );
+      debounced('1');
+      debounced('2');
 
-    setTimeout(
-      function() {
-        debounced.flush();
-        assert.equal(actual, "2");
-      },
-      5
-    );
+      setTimeout(
+        function() {
+          debounced.flush();
+          assert.equal(actual, '2');
+        },
+        5
+      );
 
-    setTimeout(
-      function() {
-        assert.equal(called, 1);
-        done();
-      },
-      15
-    );
+      setTimeout(
+        function() {
+          assert.equal(called, 1);
+          done();
+        },
+        15
+      );
+    });
   });
 });
